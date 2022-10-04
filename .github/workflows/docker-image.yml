@@ -21,3 +21,6 @@ jobs:
         echo "Hey"
         pwd
         ls -l
+        ls ..
+        git remote -v
+        cd .. && git remote -v
