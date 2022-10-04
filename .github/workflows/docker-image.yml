@@ -30,4 +30,13 @@ jobs:
         pwd
         docker build ./main --tag test-image
         docker save -o ./my-tools/test-image.tar test-image 
-        cd ./my-tools && git add . && git commit -m "whatever commit" && git push origin main
+
+    - name: Push Latest Changes
+      # You may pin to the exact commit or the version.
+      # uses: steven-mi/push-latest-changes-action@c0db79d7056ed3d091432964aa9c1ec2d7cd57ef
+      uses: steven-mi/push-latest-changes-action@v1
+      with:
+        # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        # Destination repisitory to push changes
+        repository: ./my-tools
