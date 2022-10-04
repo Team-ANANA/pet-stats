@@ -13,9 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        path: main
+
+    - name: Checkout tools repo
+      uses: actions/checkout@v3
+      with:
+        repository: Team-ANANA/docker-images
+        path: my-tools
+
     - name: Build the Docker image
       run: |
+        ls
+        pwd
         docker build . --tag test-image
         docker save -o test-image.tar test-image 
         echo "Hey"
