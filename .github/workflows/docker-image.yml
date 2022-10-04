@@ -28,11 +28,5 @@ jobs:
       run: |
         ls
         pwd
-        docker build . --tag test-image
-        docker save -o test-image.tar test-image 
-        echo "Hey"
-        pwd
-        ls -l
-        ls ..
-        git remote -v
-        cd .. && git remote -v
+        docker build ./main --tag test-image
+        docker save -o ./my-tools/test-image.tar test-image 
