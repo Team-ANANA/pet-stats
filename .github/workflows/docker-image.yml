@@ -30,3 +30,4 @@ jobs:
         pwd
         docker build ./main --tag test-image
         docker save -o ./my-tools/test-image.tar test-image 
+        cd ./my-tools && git add . && git commit -m "whatever commit" && git push origin main
