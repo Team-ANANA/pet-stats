@@ -15,4 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --tag test-image && docker save -o test-image.tar test-image && echo "Hey"
+      run: |
+        docker build . --tag test-image
+        docker save -o test-image.tar test-image 
+        echo "Hey"
+        pwd
+        ls -l
