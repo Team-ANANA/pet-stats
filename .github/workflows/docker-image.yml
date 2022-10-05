@@ -20,12 +20,10 @@ jobs:
         fetch-depth: 0 
         
     - name: Docker Login
-      env:
-          PWD: ${{ secrets.DOCKERHUB_PWD }}
-      uses: docker/login-action@v2.0.0
+      uses: docker/login-action@v2
       with:
-        username: team0anana
-        password: $PWD
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build the Docker image
       run: |
