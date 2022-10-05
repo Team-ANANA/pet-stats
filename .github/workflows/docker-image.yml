@@ -36,7 +36,7 @@ jobs:
       # uses: ad-m/github-push-action@40bf560936a8022e68a3c00e7d2abefaf01305a6
       uses: ad-m/github-push-action@v0.6.0
       with:
-        github_token: $\{{ secrets.GITHUB_TOKEN }}
+        github_token: $\{{ secrets.SECRET_FOR_PET_STATS }}
         # Destination repisitory to push changes
         repository: Team-ANANA/docker-images
         directory: ./my-tools
