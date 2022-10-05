@@ -18,13 +18,6 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0 
-
-    - name: Build the Docker image
-      run: |
-        ls
-        pwd
-        docker build . --tag test-image
-        docker images
         
     - name: Docker Login
       env:
@@ -33,10 +26,13 @@ jobs:
       with:
         username: team0anana
         password: $PWD
-     #   logout: false
-    - name: Publishing to dockerhub
+
+    - name: Build the Docker image
       run: |
-        echo "Hey sisdfa"
+        docker build -t team0anana/csc302 .
+        docker push team0anana/csc302
+        
+
         
              
     
