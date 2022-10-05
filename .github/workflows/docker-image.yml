@@ -38,12 +38,12 @@ jobs:
     - name: Commit files
       run: |
         cd ./my-tools
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
+        git config --local user.email "hao.xin.chao@mail.utoronto.ca"
+        git config --local user.name "Jason-HaoXinChao"
         git add .
         git commit -m "Add changes" -a
-        git push
-        
+        git push https://Jason-HaoXinChao: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@Team-ANANA/docker-images.git/ --all
+                
 #     - name: GitHub Push
 #       # You may pin to the exact commit or the version.
 #       # uses: ad-m/github-push-action@40bf560936a8022e68a3c00e7d2abefaf01305a6
