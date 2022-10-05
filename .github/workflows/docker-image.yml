@@ -40,4 +40,5 @@ jobs:
         github_token: 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
         # Destination repisitory to push changes
         repository: Team-ANANA/docker-images
+        branch: main
         directory: ./my-tools
