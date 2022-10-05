@@ -16,14 +16,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        path: main
-        persist-credentials: false
-        fetch-depth: 0 
-
-    - name: Checkout tools repo
-      uses: actions/checkout@v3
-      with:
-        repository: Team-ANANA/docker-images
         persist-credentials: false
         fetch-depth: 0 
 
