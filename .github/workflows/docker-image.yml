@@ -44,7 +44,7 @@ jobs:
         git config --local user.name "Jason-HaoXinChao"
         git add .
         git commit -m "Add changes" -a
-        git push https://PAT@github.com/Team-ANANA/docker-images.git/ --all
+        git push https://$PAT@github.com/Team-ANANA/docker-images.git/ --all
       
                 
 #     - name: GitHub Push
