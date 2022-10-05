@@ -42,7 +42,7 @@ jobs:
         git config --local user.name "Jason-HaoXinChao"
         git add .
         git commit -m "Add changes" -a
-        git push https://Jason-HaoXinChao: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@Team-ANANA/docker-images.git/ --all
+        git push https://Jason-HaoXinChao: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@https://github.com/Team-ANANA/docker-images.git/ --all
                 
 #     - name: GitHub Push
 #       # You may pin to the exact commit or the version.
