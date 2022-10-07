@@ -27,7 +27,8 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build -t team0anana/csc302 .
+        docker build -t team0anana/csc302:front-end ./src/frontend
+        docker build -t team0anana/csc302:front-end ./src/api
         docker push team0anana/csc302
         
 
