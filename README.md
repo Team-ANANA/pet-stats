@@ -6,7 +6,7 @@ pet-stats is a web application to display analysis of animal welfare and adoptai
 This is the main repository of the pet-stats project. All of the source code will be stored here.
 
 ## Installation
-**DO NOT** directly clone this repository. We have created Docker images containing the latest version of our code at Docker Hub. To download our web app and run the code, clone the [logistic](https://github.com/Team-ANANA/logistics) repository and follow the instruction in its README.
+**DO NOT** directly clone this repository. We have created Docker images containing the latest version of our code at Docker Hub. To download and run our web app, clone the [logistic](https://github.com/Team-ANANA/logistics) repository and follow the instruction in its README.
 
 ## Project Structure
 The project consist of three main modules, frontend, backend(api), and database. Please reference the README.md for each module.
