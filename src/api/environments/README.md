@@ -18,8 +18,9 @@ within the virtual environment, install the required packages by running:
 
 finally, start the flask api server by running:
 
-`flask run`
+`sudo start.sh`
 
-you might need to specify the host and port by running this instead:
+## Testing
+To run unit tests, go into the virtual environment as mentioned above, then run:
 
-`flask run --host 0.0.0.0 --port 5000`
+`pytest <test file name>`
