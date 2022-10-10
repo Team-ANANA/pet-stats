@@ -23,4 +23,4 @@ finally, start the flask api server by running:
 ## Testing
 To run unit tests, go into the virtual environment as mentioned above, then run:
 
-`pytest <test file name>`
+`sudo run_test.sh`
