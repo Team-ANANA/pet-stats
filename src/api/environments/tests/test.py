@@ -1,11 +1,17 @@
 import pytest
+from api import app
 
-def test_base_route():
-    #   assert response.status_code == 200
-    #   assert response.body == 'This is the root directory. Try out the /hello route!'
-    assert 1 == 1
+@pytest.fixture
+def client():
+    with app.test_client() as client:
+        yield client
 
-def test_hello_world():
-    #   assert response.status_code == 200
-    #   assert response.body == 'Hello, World!'
-    assert 'hello' in 'hello world!'
+def test_base_route(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'This is the root directory. Try out the /hello route!' in response.data
+
+def test_hello_world(client):
+    response = client.get('/hello')
+    assert response.status_code == 200
+    assert b'Hello, World!' in response.data
