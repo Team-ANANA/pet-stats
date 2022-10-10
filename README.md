@@ -16,3 +16,5 @@ Frontend is located at [src/frontend/web](https://github.com/Team-ANANA/pet-stat
 Backend is located at [src/api/environments](https://github.com/Team-ANANA/pet-stats/tree/main/src/api/environments).
 
 Database is still under development.
+
+The workflow folder contains Github Action scripts that deals with CI/CD.
