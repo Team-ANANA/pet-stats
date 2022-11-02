@@ -1,15 +1,14 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
+    types: [closed]
 
 jobs:
 
   build:
-
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +23,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+    
     - name: Build the Docker image
       run: |
         docker build -t team0anana/csc302:frontend ./src/frontend
