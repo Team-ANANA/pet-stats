@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   build:
+    name: backend api tests
 
     runs-on: ubuntu-latest
 
