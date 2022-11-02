@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-
+    name: frontend status check
     runs-on: ubuntu-latest
 
     strategy:
