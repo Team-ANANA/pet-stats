@@ -34,8 +34,9 @@ jobs:
       env:
         FLASK_APP: api.py
         FLASK_DEBUG: 1
+        FLASK_ENV: test
       run: |
-        flask run --host 0.0.0.0 --port 5000
+        nohup flask run --host 0.0.0.0 --port 5000
     
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -54,7 +55,17 @@ jobs:
       
     - name: Run frontend server
       working-directory: ./src/frontend/web
-      run: npm start
+      run: nohup npm start
       
-      
+    - name: Ping backend api
+      run: curl http://localhost:5000
+    
+    - name: Ping frontend server
+      run: curl http://localhost:3000
+    
+    - name: kill backend api
+      run: kill -9 `lsof -i:5000 -t`
+    
+    - name: kill frontend server
+      run: kill -9 `lsof -i:3000 -t`
     
