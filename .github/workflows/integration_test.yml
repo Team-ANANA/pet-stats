@@ -31,28 +31,3 @@ jobs:
     - name: Run frontend server
       run: |
         docker run -d -p 3000:3000 --name frontend frontend
-
-  ping:
-    name: ping ports
-    runs-on: ubuntu-latest
-    needs: setup
-        
-    steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
-      with:
-        persist-credentials: false
-        fetch-depth: 0 
-        wait-interval: 30
-        
-    - name: Ping backend api
-      run: curl http://localhost:5000
-    
-    - name: Ping frontend server
-      run: curl http://localhost:3000
-      
-    - name: kill backend api
-      run: kill -9 `lsof -i:5000 -t`
-    
-    - name: kill frontend server
-      run: kill -9 `lsof -i:3000 -t`
