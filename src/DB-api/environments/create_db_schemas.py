@@ -1,1 +1,0 @@
-print("Creating DB schemas")
