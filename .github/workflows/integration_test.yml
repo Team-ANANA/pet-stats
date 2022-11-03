@@ -31,12 +31,7 @@ jobs:
     - name: Run frontend server
       run: |
         docker run -d -p 3000:3000 --name frontend frontend
-    
-    - name: Ping backend api
-      run: curl http://localhost:5000
-    
-    - name: Ping frontend server
-      run: curl http://localhost:3000
+
   ping:
     name: ping ports
     runs-on: ubuntu-latest
@@ -48,50 +43,16 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0 
+        wait-interval: 30
+        
+    - name: Ping backend api
+      run: curl http://localhost:5000
     
+    - name: Ping frontend server
+      run: curl http://localhost:3000
+      
     - name: kill backend api
       run: kill -9 `lsof -i:5000 -t`
     
     - name: kill frontend server
       run: kill -9 `lsof -i:3000 -t`
-        
-#     - name: Set up Python ${{ matrix.python-version }}
-#       uses: actions/setup-python@v3
-#       with:
-#         python-version: ${{ matrix.python-version }}
-        
-#     - name: Install python dependencies
-#       working-directory: ./src/api/environments
-#       run: |
-#         python -m pip install --upgrade pip
-#         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        
-#     - name: Run backend api
-#       working-directory: ./src/api/environments
-#       env:
-#         FLASK_APP: api.py
-#         FLASK_DEBUG: 1
-#         FLASK_ENV: test
-#       run: |
-#         nohup flask run --host 0.0.0.0 --port 5000
-    
-#     - name: Use Node.js ${{ matrix.node-version }}
-#       uses: actions/setup-node@v3
-#       with:
-#         node-version: ${{ matrix.node-version }}
-#         cache: 'npm'
-#         cache-dependency-path: ./src/frontend/web
-        
-#     - name: run npm ci
-#       working-directory: ./src/frontend/web
-#       run: npm ci
-      
-#     - name: build frontend
-#       working-directory: ./src/frontend/web
-#       run: npm run build --if-present
-      
-#     - name: Run frontend server
-#       working-directory: ./src/frontend/web
-#       run: nohup npm start
-      
-    
