@@ -1,0 +1,60 @@
+name: Integration Test
+
+on: 
+  pull_request:
+    branches: ["integration"]
+
+jobs:
+  build:
+    name: integration test set up
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+        node-version: [ "16.x" ]
+        
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install python dependencies
+      working-directory: ./src/api/environments
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+    - name: Run backend api
+      working-directory: ./src/api/environments
+      env:
+        FLASK_APP: api.py
+        FLASK_DEBUG: 1
+      run: |
+        flask run --host 0.0.0.0 --port 5000
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ./src/frontend/web
+        
+    - name: run npm ci
+      working-directory: ./src/frontend/web
+      run: npm ci
+      
+    - name: build frontend
+      working-directory: ./src/frontend/web
+      run: npm run build --if-present
+      
+    - name: Run frontend server
+      working-directory: ./src/frontend/web
+      run: npm start
+      
+      
+    
