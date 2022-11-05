@@ -1,0 +1,33 @@
+name: Integration Test
+
+on: 
+  pull_request:
+    branches: ["integration"]
+
+jobs:
+  setup:
+    name: integration test set up
+    runs-on: ubuntu-latest
+        
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        fetch-depth: 0 
+        
+    - name: Build frontend docker image
+      run: |
+        docker build -t frontend ./src/frontend
+        
+    - name: Build backend docker image
+      run: |
+        docker build -t backend ./src/api
+        
+    - name: Run backend api
+      run: |
+        docker run -d -p 5000:5000 --name backend backend
+        
+    - name: Run frontend server
+      run: |
+        docker run -d -p 3000:3000 --name frontend frontend
