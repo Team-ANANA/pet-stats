@@ -1,0 +1,18 @@
+.navbar-selected{
+    background-color: #dfdfdf;
+    color: #000;
+
+}
+
+.componet-border{
+    border-left: 1px solid rgb(184, 184, 184);
+}
+
+.navbar-component{
+    /* margin:1px 2px; */
+    padding: 1px 2px;
+}
+
+.header{
+    border-bottom: 1px solid rgb(184, 184, 184);
+}
