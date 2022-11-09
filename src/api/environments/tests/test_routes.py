@@ -15,3 +15,7 @@ def test_hello_world(client):
     response = client.get('/hello')
     assert response.status_code == 200
     assert b'Hello, World!' in response.data
+
+def test_get_pie_graph_no_category(client):
+    response = client.post('V0/data/entry/category="province"&type="dog"')
+    assert response.status_code == 400
