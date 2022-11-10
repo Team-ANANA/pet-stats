@@ -18,7 +18,7 @@ function NavBar(props) {
     <>
     <Navbar bg="light" className="header">
     <Container>
-      <Navbar.Brand>Pet Adoption Data Visualization</Navbar.Brand>
+      <Navbar.Brand>Pet Adoption Data Visualizer</Navbar.Brand>
      
         <Nav className="justify-content-end">
           <Nav.Link href="/about" className={selected==="about"? "navbar-selected":""}>About</Nav.Link>

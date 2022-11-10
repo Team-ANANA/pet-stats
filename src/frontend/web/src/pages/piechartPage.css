@@ -1,0 +1,11 @@
+.rowDiv {
+    border-bottom: 1px solid rgb(184, 184, 184);
+    padding-bottom: 15px;
+    padding-right: 15px;
+}
+
+.AdvanceSearch{
+    border-bottom: 1px solid rgb(95, 141, 222);
+    color:rgb(95, 141, 222);
+    padding-top: 10px;
+}
