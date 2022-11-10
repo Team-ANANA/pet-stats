@@ -5,7 +5,7 @@ import App from './App';
 
 test('renders title of our website', () => {
   render(<App />);
-  const title = screen.getByText(/Pet Adoption Data Visualization/i);
+  const title = screen.getByText(/Pet Adoption Data Visualizer/i);
   expect(title).toBeInTheDocument();
 });
 
@@ -29,8 +29,8 @@ describe('Piechart page is routed and displays', () => {
       renderWithRouter(<App />);
   });
   test('should render without crashing', () => {});
-  test('should render home page', () => {
-      const piechartPage = screen.getByText('Pie Chart Page');
+  test('should render pie chart page', () => {
+      const piechartPage = screen.getByText('Pie Chart Visualizer');
       expect(piechartPage).toBeInTheDocument();
   });
 });

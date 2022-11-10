@@ -259,7 +259,7 @@ function PieChartPage() {
             <>
             <Container>
             <Row>
-            <h1 className="title">Pie Chart</h1>
+            <h1 className="title">Pie Chart Visualizer</h1>
             </Row>
             <Row>
             <Col>
