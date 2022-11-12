@@ -236,7 +236,13 @@ function PieChartPage() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(params),
-            }).then((response) => response.json())
+            }).then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else {
+                    throw new Error('Something went wrong on api server!');
+                }})
             .then((result) => {
                 setupGraphData(result);
             }).catch((error) => {

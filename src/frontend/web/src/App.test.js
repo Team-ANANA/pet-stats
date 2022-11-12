@@ -33,5 +33,11 @@ describe('Piechart page is routed and displays', () => {
       const piechartPage = screen.getByText('Pie Chart Visualizer');
       expect(piechartPage).toBeInTheDocument();
   });
+  test('should render filters', () => {
+    const Filter = screen.getByText(/Gender/i);
+    expect(Filter).toBeInTheDocument();
+    const advanceSearch = screen.getByText(/Advance Search/i);
+    expect(advanceSearch).toBeInTheDocument();
+});
 });
 
