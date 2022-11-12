@@ -13,13 +13,31 @@ def default_route():
 def hello():
     return 'Hello, World!'
 
-# # Route for querying entries for all parameters
-# @app.get('V0/data/entry/')
-# def get_entries():
+# Route for querying entries for all parameters
+@app.get('V0/data/entry/')
+def get_entries():
 
-#     entries = {}
-#     # TODO: fill in the entries with sql query
-#     return make_response(jsonify(entries), 200)
+    entries = {}
+    
+    cnx = mysql.connector.connect(user='root', password='my-secret-pw', port="3306",
+                                host='localhost',
+                                database='pet-stats')
+    mycursor = cnx.cursor()
+    # query each enum table and store them in entries
+    for param in param_names:
+        sql = f"SELECT * FROM {param} "
+        mycursor.execute(sql)
+        data = mycursor.fetchall()
+        rows = {}
+        if param == "breed" or param == "province":
+            for id, parent_id, child_name in data:
+                rows[parent_id][child_name] = id
+        else:
+            for id, entry in data:
+                rows[entry] = id
+        entries[param]=rows
+    cnx.close()    
+    return make_response(jsonify(entries), 200)
 
 
 # Route for querying for pie graph
