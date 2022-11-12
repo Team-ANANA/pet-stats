@@ -71,10 +71,6 @@ const EXAMPLE_JSON = {
 }
 
 const EXAMPLE_PIECHART_DATA = {"Dog": 35, "Cat": 50, "Bird": 5, "Other": 10}
-// const data = [{ label: 'Dog', value: 35 }, 
-        // { label: 'Cat', value: 50 }, 
-        // { label: 'Bird', value: 5 }, 
-        // { label: 'Other', value: 10 }];
 
 function PieChartPage() {
     
@@ -91,7 +87,7 @@ function PieChartPage() {
                 }
             });
         }, []);
-
+        
         function setOptions(result){
             let parms = ["Type", "Age", "Gender", "Size", "Status", "Country"]
             let setFunc = [setTypeOpt, setAgeOpt, setGenderOpt, setSizeOpt, setStatusOpt, setCountryOpt]
@@ -106,13 +102,13 @@ function PieChartPage() {
                 setFunc[i]([ALL_OPTION, ...options])
                 setFuncSelected[i]([ALL_OPTION])
             }
-
+            
             parms = ["Breed", "Province"]
             setFunc = [setBreedOpt, setProvinceOpt]
             setFuncSelected = [setBreedSelected, setProvinceSelected]
             let cache = [ALLBREEDS, ALLPROVINCE]
             let dependentOptions = [typeSelected, countrySelected]
-
+            
             for (let i = 0; i < parms.length; i++) {
                 let parm = parms[i];
                 for (const [key, value] of Object.entries(result[parm])) {
@@ -123,9 +119,9 @@ function PieChartPage() {
                 }
                 setOptionsFromCache(cache[i], dependentOptions[i], setFunc[i], setFuncSelected[i], true)
             }
-
+            
         }
-
+        
         function setOptionsFromCache(cache, options, setOptions, setSelected, setup){
             if(options.length === 0 && !setup){
                 setOptions([]);
@@ -149,7 +145,7 @@ function PieChartPage() {
             setOptions([ALL_OPTION, ...newOptions]);
             setSelected([ALL_OPTION]);
         }
-        const [typeOpt, setTypeOpt] = useState([])//[{label: 'Dog', id: 1},{label: 'Cat', id: 2},{label: 'Bird', id: 3},{label: 'Other', id: 4}])
+        const [typeOpt, setTypeOpt] = useState([])
         const [typeSelected, setTypeSelected] = useState([]);
         
         const [breedOpt, setBreedOpt] = useState([])
@@ -177,7 +173,7 @@ function PieChartPage() {
         {label: "Country", id:3}, {label: "Status", id:4}, 
         {label: "Age", id:5}, {label: "Gender", id:6}, {label: "Size", id:7}, {label: "Province", id:7}];
         const [catSelected, setCatSelected] = useState([{label: "Type", id:1}]);
-
+        
         function reset(){
             setTypeSelected([ALL_OPTION]);
             setStatusSelected([ALL_OPTION]);
@@ -189,7 +185,7 @@ function PieChartPage() {
             setOptionsFromCache(ALLBREEDS, typeSelected, setBreedOpt, setBreedSelected, true)
             setOptionsFromCache(ALLPROVINCE, countrySelected, setProvinceOpt, setProvinceSelected, true)
         }
-
+        
         
         let now = new Date()
         now = now.toISOString().split('T')[0]
@@ -207,12 +203,11 @@ function PieChartPage() {
         function selectedToArrays(selected, allOptions){
             let arr = selected.map((item) => item.id);
             if(arr.includes(ALL_OPTION.id)){
-                //arr = allOptions.map((item) => item.id);
                 arr = allOptions.filter((item) => item.id !== ALL_OPTION.id).map((item) => item.id);
             }
             return arr
         }
-
+        
         function getGraphData(){
             let url = API_URL + "/V0/graph/pie";
             let params = {
@@ -229,7 +224,7 @@ function PieChartPage() {
                 "category": catSelected[0].label
             }
             console.log(params)
-
+            
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -243,152 +238,152 @@ function PieChartPage() {
                 else {
                     throw new Error('Something went wrong on api server!');
                 }})
-            .then((result) => {
-                setupGraphData(result);
-            }).catch((error) => {
-                if(API_URL.includes("localhost")){
-                    setupGraphData(EXAMPLE_PIECHART_DATA);
-                }
-            });
-        }
-
-        function setupGraphData(results){
-            let data = [];
-            for (const [key, value] of Object.entries(results)) {
-                data.push({label: key, value: value});
-            }
-            console.log(data)
-            setData(data);
-        }
-        
-        return (
-            <>
-            <Container>
-            <Row>
-            <h1 className="title">Pie Chart Visualizer</h1>
-            </Row>
-            <Row>
-            <Col>
-            <FilterComponent
-            options={typeOpt}
-            selectedValue={typeSelected}
-            setSelectedValue={setTypeSelected}
-            onChange={[setOptionsFromCache, ALLBREEDS, setBreedOpt, setBreedSelected]}
-            title={"Type"}/>
-            </Col>
-            <Col>
-            <FilterComponent
-            options={breedOpt}
-            selectedValue={breedSelected}
-            setSelectedValue={setBreedSelected}
-            groupBy={true}
-            title={"Breed"}/>
-            </Col>
-            <Col>
-            <FilterComponent
-            options={statusOpt}
-            selectedValue={statusSelected}
-            setSelectedValue={setStatusSelected}
-            title={"Status"}/>
-            </Col>
-            <Col>
-            <FilterComponent
-            options={countryOpt}
-            selectedValue={countrySelected}
-            setSelectedValue={setCountrySelected}
-            onChange={[setOptionsFromCache, ALLPROVINCE, setProvinceOpt, setProvinceSelected]}
-            title={"Country"}/>
-            </Col>
-            </Row>
-            <Row className="rowDiv">
-            <Col>
-            <strong>From</strong>
-            <Form.Control
-            type="date"
-            name="datepic"
-            placeholder="DateRange"
-            max={enddate}
-            value={startdate}
-            onChange={(e) => setStartDate(e.target.value)}/>
-            </Col>
-            <Col>
-            <strong>To</strong>
-            <Form.Control
-            type="date"
-            name="datepic"
-            placeholder="DateRange"
-            value={enddate}
-            min={startdate}
-            onChange={(e) => setEndDate(e.target.value)}/>
-            </Col>
-            <Col style={{position: "relative"}}>
-            <Button variant="outline-primary" onClick={setToToday} style={{position: "absolute", bottom: "0"}}>Today</Button>
-            </Col>
-            </Row>
-            <Row>
-            {advanceSearch ?
-                <strong className="AdvanceSearch" onClick={() => {
-                    setAdvanceSearch(false)}}>Advance Search &#8964;</strong> :
-                    <strong className="AdvanceSearch" onClick={() => {
-                        setAdvanceSearch(true)}}>Advance Search &#8963;</strong>}
-                        
-                        </Row>
-                        {advanceSearch && <Row className="rowDiv">
-                        <Col>
-                        <FilterComponent
-                        options={ageOpt}
-                        selectedValue={ageSelected}
-                        setSelectedValue={setAgeSelected}
-                        title={"Age"}/>
-                        </Col>
-                        <Col>
-                        <FilterComponent
-                        options={genderOpt}
-                        selectedValue={genderSelected}
-                        setSelectedValue={setGenderSelected}
-                        title={"Gender"}/>
-                        </Col>
-                        <Col>
-                        <FilterComponent
-                        options={sizeOpt}
-                        selectedValue={sizeSelected}
-                        setSelectedValue={setSizeSelected}
-                        title={"Size"}/>
-                        </Col>
-                        <Col>
-                        <FilterComponent
-                        options={provinceOpt}
-                        selectedValue={ provinceSelected}
-                        setSelectedValue={setProvinceSelected}
-                        groupBy={true}
-                        title={"Province/State"}/>
-                        </Col>
-                        </Row>}
-                        <Row className="rowDiv">
-                        <Col>
-                        <FilterComponent
-                        options={catOpt}
-                        selectedValue={catSelected}
-                        setSelectedValue={setCatSelected}
-                        title={"Categorized By"}
-                        single={true}/>
-                        </Col>
-                        </Row>
-                        <Row>
-                        <Button variant="primary" 
-                        style={{width: "100px", margin: "10px"}}
-                        onClick={getGraphData}>Generate</Button>
-                        <Button 
-                        variant="primary" 
-                        style={{width: "100px", margin: "10px"}}
-                        onClick={reset}>&#x21bb; Reset </Button>
-                        </Row>
-                        <Row>
-                        <PieChart data={data} outerRadius={200} innerRadius={0}/>
-                        </Row>
-                        </Container>
-                        </>
-                        )
+                .then((result) => {
+                    setupGraphData(result);
+                }).catch((error) => {
+                    if(API_URL.includes("localhost")){
+                        setupGraphData(EXAMPLE_PIECHART_DATA);
                     }
-                    
-                    export default PieChartPage
+                });
+            }
+            
+            function setupGraphData(results){
+                let data = [];
+                for (const [key, value] of Object.entries(results)) {
+                    data.push({label: key, value: value});
+                }
+                console.log(data)
+                setData(data);
+            }
+            
+            return (
+                <>
+                <Container>
+                <Row>
+                <h1 className="title">Pie Chart Visualizer</h1>
+                </Row>
+                <Row>
+                <Col>
+                <FilterComponent
+                options={typeOpt}
+                selectedValue={typeSelected}
+                setSelectedValue={setTypeSelected}
+                onChange={[setOptionsFromCache, ALLBREEDS, setBreedOpt, setBreedSelected]}
+                title={"Type"}/>
+                </Col>
+                <Col>
+                <FilterComponent
+                options={breedOpt}
+                selectedValue={breedSelected}
+                setSelectedValue={setBreedSelected}
+                groupBy={true}
+                title={"Breed"}/>
+                </Col>
+                <Col>
+                <FilterComponent
+                options={statusOpt}
+                selectedValue={statusSelected}
+                setSelectedValue={setStatusSelected}
+                title={"Status"}/>
+                </Col>
+                <Col>
+                <FilterComponent
+                options={countryOpt}
+                selectedValue={countrySelected}
+                setSelectedValue={setCountrySelected}
+                onChange={[setOptionsFromCache, ALLPROVINCE, setProvinceOpt, setProvinceSelected]}
+                title={"Country"}/>
+                </Col>
+                </Row>
+                <Row className="rowDiv">
+                <Col>
+                <strong>From</strong>
+                <Form.Control
+                type="date"
+                name="datepic"
+                placeholder="DateRange"
+                max={enddate}
+                value={startdate}
+                onChange={(e) => setStartDate(e.target.value)}/>
+                </Col>
+                <Col>
+                <strong>To</strong>
+                <Form.Control
+                type="date"
+                name="datepic"
+                placeholder="DateRange"
+                value={enddate}
+                min={startdate}
+                onChange={(e) => setEndDate(e.target.value)}/>
+                </Col>
+                <Col style={{position: "relative"}}>
+                <Button variant="outline-primary" onClick={setToToday} style={{position: "absolute", bottom: "0"}}>Today</Button>
+                </Col>
+                </Row>
+                <Row>
+                {advanceSearch ?
+                    <strong className="AdvanceSearch" onClick={() => {
+                        setAdvanceSearch(false)}}>Advance Search &#8964;</strong> :
+                        <strong className="AdvanceSearch" onClick={() => {
+                            setAdvanceSearch(true)}}>Advance Search &#8963;</strong>}
+                            
+                            </Row>
+                            {advanceSearch && <Row className="rowDiv">
+                            <Col>
+                            <FilterComponent
+                            options={ageOpt}
+                            selectedValue={ageSelected}
+                            setSelectedValue={setAgeSelected}
+                            title={"Age"}/>
+                            </Col>
+                            <Col>
+                            <FilterComponent
+                            options={genderOpt}
+                            selectedValue={genderSelected}
+                            setSelectedValue={setGenderSelected}
+                            title={"Gender"}/>
+                            </Col>
+                            <Col>
+                            <FilterComponent
+                            options={sizeOpt}
+                            selectedValue={sizeSelected}
+                            setSelectedValue={setSizeSelected}
+                            title={"Size"}/>
+                            </Col>
+                            <Col>
+                            <FilterComponent
+                            options={provinceOpt}
+                            selectedValue={ provinceSelected}
+                            setSelectedValue={setProvinceSelected}
+                            groupBy={true}
+                            title={"Province/State"}/>
+                            </Col>
+                            </Row>}
+                            <Row className="rowDiv">
+                            <Col>
+                            <FilterComponent
+                            options={catOpt}
+                            selectedValue={catSelected}
+                            setSelectedValue={setCatSelected}
+                            title={"Categorized By"}
+                            single={true}/>
+                            </Col>
+                            </Row>
+                            <Row>
+                            <Button variant="primary" 
+                            style={{width: "100px", margin: "10px"}}
+                            onClick={getGraphData}>Generate</Button>
+                            <Button 
+                            variant="primary" 
+                            style={{width: "100px", margin: "10px"}}
+                            onClick={reset}>&#x21bb; Reset </Button>
+                            </Row>
+                            <Row>
+                            <PieChart data={data} outerRadius={200} innerRadius={0}/>
+                            </Row>
+                            </Container>
+                            </>
+                            )
+                        }
+                        
+                        export default PieChartPage
