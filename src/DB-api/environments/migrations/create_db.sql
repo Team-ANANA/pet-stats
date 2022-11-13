@@ -35,7 +35,7 @@ CREATE TABLE `tags` (
 
 CREATE TABLE `types` (
   `id` int PRIMARY KEY NOT NULL,
-  `descriptor` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL
 );
 
 CREATE TABLE `coats` (
