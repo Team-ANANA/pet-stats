@@ -10,12 +10,7 @@ def client():
 def test_base_route(client):
     response = client.get('/')
     assert response.status_code == 200
-    assert b'This is the root directory. Try out the /hello route!' in response.data
-
-def test_hello_world(client):
-    response = client.get('/hello')
-    assert response.status_code == 200
-    assert b'Hello, World!' in response.data
+    assert b'This is the root directory.' in response.data
 
 def test_pie_graph_invalid_category(client):
     response = client.post('/V0/graph/pie', json={

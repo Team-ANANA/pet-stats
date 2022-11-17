@@ -7,14 +7,10 @@ param_names=['type', 'age', 'breed', 'gender', 'size', 'status', 'country', 'pro
 
 @app.get('/')
 def default_route():
-    return 'This is the root directory. Try out the /hello route!'
-
-@app.get('/hello')
-def hello():
-    return 'Hello, World!'
+    return 'This is the root directory.'
 
 # Route for querying entries for all parameters
-@app.get('V0/data/entry/')
+@app.get('/V0/data/entry/')
 def get_entries():
 
     entries = {}
@@ -36,7 +32,8 @@ def get_entries():
             for id, entry in data:
                 rows[entry] = id
         entries[param]=rows
-    cnx.close()    
+    cnx.close()
+
     return make_response(jsonify(entries), 200)
 
 
@@ -90,8 +87,12 @@ def get_pie_graph():
     mycursor.execute(sql)
     data = mycursor.fetchall()
     cnx.close()
+
+    reformatted_data = {}
+    for count, category in data:
+        reformatted_data[category] = count
     
-    return make_response(jsonify(data), 200)
+    return make_response(jsonify(reformatted_data), 200)
 
 def create_temp_table(array, table_name):
     values = ""
