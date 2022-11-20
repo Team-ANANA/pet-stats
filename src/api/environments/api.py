@@ -1,9 +1,12 @@
 from flask import Flask, jsonify, make_response, request
-import mysql.connector
 from datetime import datetime
+import sql_util
+import logging
 
 app = Flask(__name__)
 param_names=['type', 'age', 'breed', 'gender', 'size', 'status', 'country', 'province']
+
+logging.basicConfig(filename='api.log', encoding='utf-8', level=logging.DEBUG)
 
 @app.get('/')
 def default_route():
@@ -12,27 +15,40 @@ def default_route():
 # Route for querying entries for all parameters
 @app.get('/V0/data/entry/')
 def get_entries():
-
     entries = {}
-    
-    cnx = mysql.connector.connect(user='root', password='my-secret-pw', port="3306",
-                                host='localhost',
-                                database='pet-stats')
-    mycursor = cnx.cursor()
+    types = {}
+    countries = {}
+
     # query each enum table and store them in entries
     for param in param_names:
-        sql = f"SELECT * FROM {param} "
-        mycursor.execute(sql)
-        data = mycursor.fetchall()
+        sql = f"SELECT * FROM {param};"
+        data = sql_util.execute_sql(sql)
         rows = {}
-        if param == "breed" or param == "province":
-            for id, parent_id, child_name in data:
-                rows[parent_id][child_name] = id
+
+        # get mapping of type and country for breed and province
+        if param == 'type':
+            for id,type in data:
+                types[id] = type
+        elif param == 'country':
+            for id,country in data:
+                countries[id] = country
+
+        if param == "breed":
+            for id, type_id, breed in data:
+                type = types[type_id]
+                if type not in rows:
+                    rows[type] = {}
+                rows[type][breed] = id
+        elif param == "province":
+            for id, country_id, province in data:
+                country = countries[country_id]
+                if country not in rows:
+                    rows[country] = {}
+                rows[country][province] = id
         else:
             for id, entry in data:
                 rows[entry] = id
         entries[param]=rows
-    cnx.close()
 
     return make_response(jsonify(entries), 200)
 
@@ -40,8 +56,10 @@ def get_entries():
 # Route for querying for pie graph
 @app.post('/V0/graph/pie')
 def get_pie_graph():
+
     # list of parameters in query
     parameters = request.get_json()
+    logging.info("Received pie graph request with body: %s", str(parameters))
 
     # category is mandatory for pie graph request
     if 'category' in parameters:
@@ -58,16 +76,14 @@ def get_pie_graph():
     # only add condition if parameter is given
     for param_name, entries in parameters.items():
         if entries != [] and param_name not in ['dateEnd', 'dateBegin']:
-            temp_table += create_temp_table(entries, param_name)
+            temp_table += sql_util.create_temp_table(entries, param_name)
             where += f"({param_name} in (SELECT * FROM @{param_name})) AND"
 
     # add date range in query
     if 'dateBegin' in parameters and 'dateEnd' in parameters:
-        begin = datetime.strptime(parameters['dateBegin'])
-        begin = datetime.timestamp(begin)
+        begin = datetime.strptime(parameters['dateBegin'], '%Y-%m-%d')
         where += f"(published_at >= {begin}) AND"
-        end = datetime.strptime(parameters['dateEnd'])
-        end = datetime.timestamp(end)
+        end = datetime.strptime(parameters['dateEnd'], '%Y-%m-%d')
         where += f"(published_at <= {end}"
     else:
         return make_response("", 400)
@@ -80,13 +96,7 @@ def get_pie_graph():
         + where + ";"
 
     # execute sql query
-    cnx = mysql.connector.connect(user='root', password='my-secret-pw', port="3306",
-                                host='localhost',
-                                database='pet-stats')
-    mycursor = cnx.cursor()
-    mycursor.execute(sql)
-    data = mycursor.fetchall()
-    cnx.close()
+    data = sql_util.execute_sql(sql)
 
     reformatted_data = {}
     for count, category in data:
@@ -94,14 +104,3 @@ def get_pie_graph():
     
     return make_response(jsonify(reformatted_data), 200)
 
-def create_temp_table(array, table_name):
-    values = ""
-    for entry in array:
-        values += f",({entry})"
-    values = values[1:]
-    sql = f"""
-    DECLARE @{table_name} varchar(100);
-    INSERT INTO @{table_name} values{values};
-    """ 
-    return sql
-    
