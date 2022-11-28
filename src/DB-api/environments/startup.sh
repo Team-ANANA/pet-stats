@@ -1,4 +1,8 @@
 #!/bin/bash
 
+
+echo 'in startup.sh, installing reqs'
 pip install -r requirements.txt
-#TODO need to set a cron tab
+
+
+python3 ./utils/coordinator.py
