@@ -13,17 +13,17 @@ import LineGraphPage from './pages/lineGraphPage';
 import AboutPage from './pages/aboutPage';
 
 
-function App() {
+function App(props) {
   return (
     <BrowserRouter>
 
     <NavBar/>
     <Routes>
       <Route path="/"
-             element={<HeatMapPage/>}
+             element={<HeatMapPage test={props.test}/>}
       />
       <Route path="/heatmap"
-             element={<HeatMapPage/>}
+             element={<HeatMapPage test={props.test}/>}
       />
       <Route path="/linegraph"
              element={<LineGraphPage/>}
