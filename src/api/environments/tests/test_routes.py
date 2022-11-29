@@ -95,16 +95,16 @@ def mock_execute_get_entry_sql(sql):
 def test_get_entries(client):
     response = client.get('/V0/data/entry/')
     data = json.loads(response.data)
-    assert data['type'] == {'dog': 1, 'cat': 2, 'other': 3}
-    assert data['age'] == {'baby': 1, 'young': 2, 'adult': 3}
-    assert data['breed'] == {'dog': {'affenpinscher': 1, 'Afghan Hound': 2}, 'cat': {
+    assert data['Type'] == {'dog': 1, 'cat': 2, 'other': 3}
+    assert data['Age'] == {'baby': 1, 'young': 2, 'adult': 3}
+    assert data['Breed'] == {'dog': {'affenpinscher': 1, 'Afghan Hound': 2}, 'cat': {
         'American Curl': 3}, 'other': {'Alpaca': 4}}
-    assert data['gender'] == {'male': 1, 'female': 2, 'asexual': 3}
-    assert data['size'] == {'small': 1,
+    assert data['Gender'] == {'male': 1, 'female': 2, 'asexual': 3}
+    assert data['Size'] == {'small': 1,
                             'medium': 2, 'large': 3, 'extra large': 4}
-    assert data['status'] == {'adaptable': 1, 'adapted': 2, 'hold': 3}
-    assert data['country'] == {'CA': 1, 'US': 2, 'MX': 3}
-    assert data['province'] == {'CA': {'AB': 1, 'BC': 2, 'MB': 3, 'NB': 4, 'NL': 5, 'NS': 6, 'ON': 7}, 'US': {
+    assert data['Status'] == {'adaptable': 1, 'adapted': 2, 'hold': 3}
+    assert data['Country'] == {'CA': 1, 'US': 2, 'MX': 3}
+    assert data['Province'] == {'CA': {'AB': 1, 'BC': 2, 'MB': 3, 'NB': 4, 'NL': 5, 'NS': 6, 'ON': 7}, 'US': {
         'AL': 8, 'AK': 9, 'AZ': 10}, 'MX': {'AGS': 11, 'BCN': 12, 'BCS': 13}}
     assert response.status_code == 200
 
