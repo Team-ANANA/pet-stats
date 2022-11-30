@@ -1,1 +1,0 @@
-print("updating the database")
