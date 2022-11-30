@@ -75,7 +75,7 @@ def get_pie_graph():
     
     # only add condition if parameter is given
     for param_name, entries in parameters.items():
-        if entries != [] and param_name not in ['dateEnd', 'dateBegin']:
+        if entries != [] and param_name not in ['dateEnd', 'dateBegin', 'country']:
             temp_table += sql_util.create_temp_table(entries, param_name)
             where += f"({param_name} in (SELECT * FROM @{param_name})) AND"
 
@@ -84,7 +84,7 @@ def get_pie_graph():
         begin = datetime.strptime(parameters['dateBegin'], '%Y-%m-%d')
         where += f"(published_at >= {begin}) AND"
         end = datetime.strptime(parameters['dateEnd'], '%Y-%m-%d')
-        where += f"(published_at <= {end}"
+        where += f"(published_at <= {end})"
     else:
         return make_response("", 400)
 
@@ -104,3 +104,57 @@ def get_pie_graph():
     
     return make_response(jsonify(reformatted_data), 200)
 
+# Route for querying for heatmap
+@app.post('/V0/graph/heat')
+def get_heat_map():
+
+    # list of parameters in query
+    parameters = request.get_json()
+    logging.info("Received heatmap request with body: %s", str(parameters))
+
+    # country is mandatory for pie graph request
+    if 'country' in parameters:
+        country = parameters['country']
+    else:
+        return make_response("", 400)
+    
+    # parse the tables for where conditions
+    where = f"WHERE"
+    temp_table = ""
+    
+    # only add condition if parameter is given
+    for param_name, entries in parameters.items():
+        if entries != [] and param_name not in ['dateEnd', 'dateBegin']:
+            temp_table += sql_util.create_temp_table(entries, param_name)
+            if param_name == 'breed':
+                where += f"((primary_breed_id IN (SELECT * FROM @{param_name})) OR \
+                            (secondary_breed_id IN (SELECT * FROM @{param_name}))) AND"
+            else:
+                where += f"({param_name}_id IN (SELECT * FROM @{param_name})) AND"
+
+    # add date range in query
+    if 'dateBegin' in parameters and 'dateEnd' in parameters:
+        begin = datetime.strptime(parameters['dateBegin'], '%Y-%m-%d')
+        where += f"(published_at >= {begin}) AND"
+        end = datetime.strptime(parameters['dateEnd'], '%Y-%m-%d')
+        where += f"(published_at <= {end})"
+    else:
+        return make_response("", 400)
+
+    # construct the final sql statement.
+    sql = temp_table \
+        + f"SELECT COUNT(animals.id), province.descriptor" \
+        +  "FROM (animals INNER JOIN province ON animals.province_id = province.id)"\
+        + f"GROUP BY province_id" \
+        + where + ";"
+
+    # execute sql query
+    data = sql_util.execute_sql(sql)
+
+    # format payload in province to number of matching animals mapping
+    reformatted_data = {}
+    for count, province in data:
+        reformatted_data[province] = count
+    
+    return make_response(jsonify(reformatted_data), 200)
+    

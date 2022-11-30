@@ -128,3 +128,23 @@ def test_get_pie_graph(client):
         assert "published_at >= 2022-11-11 00:00:00" in sql
         assert "published_at <= 2022-11-22 00:00:00" in sql
         assert json.loads(response.data) == {'small': 12, 'large':10, 'medium':5}
+
+def test_get_heatmap(client):
+    with patch('sql_util.execute_sql') as mock_sql:
+        mock_sql.return_value = [(0, 'AB'), (1, 'BC'), (2, 'MB'), (3, 'NB'), (4, 'NL'), (5, 'NS'), (6, 'ON')]
+        response = client.post('/V0/graph/heat', json={
+            "type_id": ['abc'],
+            "age_id": [123],
+            "country_id": 1,
+            "dateBegin": "2022-11-11",
+            "dateEnd": "2022-11-22"
+        })
+        sql = mock_sql.call_args.args[0]
+        sql = str.lower(sql)
+        assert "type_id in (select * from @type)" in sql
+        assert "age_id in (select * from @age)" in sql
+        assert "country_id in (select * from @country)" in sql
+        assert "published_at >= 2022-11-11 00:00:00" in sql
+        assert "published_at <= 2022-11-22 00:00:00" in sql
+        assert json.loads(response.data) == {'small': 12, 'large':10, 'medium':5}
+
