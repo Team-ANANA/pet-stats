@@ -260,7 +260,7 @@ function PieChartPage() {
                 <>
                 <Container>
                 <Row>
-                <h1 className="title">Pie Chart Visualizer</h1>
+                <h4 className="title">Pie Chart Visualizer</h4>
                 </Row>
                 <Row>
                 <Col>
@@ -297,7 +297,7 @@ function PieChartPage() {
                 </Row>
                 <Row className="rowDiv">
                 <Col>
-                <strong>From</strong>
+                <strong className="page-header">From</strong>
                 <Form.Control
                 type="date"
                 name="datepic"
@@ -307,7 +307,7 @@ function PieChartPage() {
                 onChange={(e) => setStartDate(e.target.value)}/>
                 </Col>
                 <Col>
-                <strong>To</strong>
+                <strong className="page-header">To</strong>
                 <Form.Control
                 type="date"
                 name="datepic"
@@ -317,7 +317,7 @@ function PieChartPage() {
                 onChange={(e) => setEndDate(e.target.value)}/>
                 </Col>
                 <Col style={{position: "relative"}}>
-                <Button variant="outline-primary" onClick={setToToday} style={{position: "absolute", bottom: "0"}}>Today</Button>
+                <Button variant="outline-primary" onClick={setToToday} className="empty-button">Today</Button>
                 </Col>
                 </Row>
                 <Row>
@@ -371,15 +371,15 @@ function PieChartPage() {
                             </Row>
                             <Row>
                             <Button variant="primary" 
-                            style={{width: "100px", margin: "10px"}}
+                            className="fill-button"
                             onClick={getGraphData}>Generate</Button>
                             <Button 
                             variant="primary" 
-                            style={{width: "100px", margin: "10px"}}
+                            className="fill-button"
                             onClick={reset}>&#x21bb; Reset </Button>
                             </Row>
                             <Row>
-                            <PieChart data={data} outerRadius={200} innerRadius={0}/>
+                            <PieChart data={data} outerRadius={250} innerRadius={0}/>
                             </Row>
                             </Container>
                             </>
