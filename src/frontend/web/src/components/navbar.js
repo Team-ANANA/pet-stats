@@ -7,22 +7,24 @@ import "./navbar.css";
 
 
 function NavBar(props) {
-    const [selected, setSelected] = useState("linegraph");
+    const [selected, setSelected] = useState("");
     
     useEffect(() => {
         let visualization = window.location.href.split("/").pop()
         setSelected(visualization);
+        if(!visualization){
+            setSelected("heatmap")
+        }
     }, []);
     
     return (
         <>
         <Navbar bg="light" className="header">
         <Container>
-        <Navbar.Brand>Pet Adoption Data Visualizer</Navbar.Brand>
-        
-        <Nav className="justify-content-end">
-        <Nav.Link href="/about" className={selected==="about"? "navbar-selected":""}>About</Nav.Link>
-        </Nav>
+        <Navbar.Brand className='Brand'>&#128062; Pet Spot</Navbar.Brand>
+        {/* <Nav className="justify-content-end">
+        <Nav.Link href="/about" className={selected==="about text"? "navbar-selected":"text"}>About</Nav.Link>
+        </Nav> */}
         </Container>
         </Navbar>
         
@@ -30,17 +32,17 @@ function NavBar(props) {
         <Container>
         <Nav >
         <Nav.Link 
-        className={"navbar-component "+(selected==="heatmap"?'navbar-selected': '')} 
+        className={"navbar-component "+(selected==="heatmap"?'navbar-selected text': 'text')} 
         href="/heatmap"
         onSelect={()=> {setSelected("heatmap");}}
-        >Map</Nav.Link>
+        >Heat Map</Nav.Link>
         <Nav.Link 
-        className={"navbar-component componet-border "+(selected==="linegraph"?'navbar-selected': '')} 
+        className={"navbar-component componet-border "+(selected==="linegraph"?'navbar-selected text': 'text')} 
         href="/linegraph"
         onSelect={()=> {setSelected("linegraph");}}
         >Line Graph</Nav.Link>
         <Nav.Link 
-        className={"navbar-component componet-border "+(selected==="piechart"?'navbar-selected': '')}
+        className={"navbar-component componet-border "+(selected==="piechart"?'navbar-selected text': 'text')}
         href="/piechart"
         onSelect={()=> {setSelected("piechart");}}
         >Pie Chart</Nav.Link>
