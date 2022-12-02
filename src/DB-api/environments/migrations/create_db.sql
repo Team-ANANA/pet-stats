@@ -23,7 +23,7 @@ CREATE TABLE `animals` (
   `environment_dogs` boolean,
   `environment_cats` boolean,
   `name` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` varchar(255),
   `status` varchar(255) NOT NULL,
   `published_at` timestamp NOT NULL
 );
@@ -72,7 +72,6 @@ CREATE TABLE `organization` (
   `country` varchar(255)
 );
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`);
 
 ALTER TABLE `animals` ADD FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);
 

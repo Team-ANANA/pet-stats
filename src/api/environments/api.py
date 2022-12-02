@@ -48,7 +48,7 @@ def get_entries():
         else:
             for id, entry in data:
                 rows[entry] = id
-        entries[param]=rows
+        entries[param.capitalize()]=rows
 
     return make_response(jsonify(entries), 200)
 
