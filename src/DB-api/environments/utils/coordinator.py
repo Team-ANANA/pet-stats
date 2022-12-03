@@ -27,14 +27,13 @@ def setup_db():
     # Run migrations to set up the DB
     db_util.execute_migration('teardown.sql')
     db_util.execute_migration('create_db.sql')
-    # TODO maybe do some assertions to validate that the DB exists and has an expected structure?
-
+    db_util.execute_migration('add_enums.sql')
 
     # Load petfinder metadata
     db_util.execute_queries(db_util.generate_metadata_queries())
 
     # Load actual petfinder animals
-    db_util.execute_queries(db_util.generate_animal_queries(1))
+    db_util.execute_queries(db_util.generate_animal_queries(5))
 
 
 setup_db()
