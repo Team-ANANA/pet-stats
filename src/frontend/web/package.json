@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.2",
     "d3": "^7.6.1",
+    "d3-collection": "^1.0.7",
     "multiselect-react-dropdown": "^2.0.25",
     "package.json": "^2.0.1",
     "react": "^18.2.0",
@@ -29,10 +30,10 @@
       "react-app/jest"
     ]
   },
-  "jest":{
+  "jest": {
     "moduleNameMapper": {
       "d3": "<rootDir>/node_modules/d3/dist/d3.min.js"
-  }
+    }
   },
   "browserslist": {
     "production": [
