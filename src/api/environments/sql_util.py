@@ -5,7 +5,7 @@ def execute_sql(sql):
     data = {}
     try:
         cnx = mysql.connector.connect(user='root', password='my-secret-pw', port="3306",
-                                    host='localhost',
+                                    host='172.17.0.2',
                                     database='pet-stats')
         mycursor = cnx.cursor()
         mycursor.execute(sql)
