@@ -6,14 +6,17 @@ import logging
 app = Flask(__name__)
 param_names=['type', 'age', 'breed', 'gender', 'size', 'status', 'country', 'province']
 
-logging.basicConfig(filename='api.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.FileHandler('api.log'), logging.StreamHandler()])
 
 @app.get('/')
 def default_route():
     return 'This is the root directory.'
 
 # Route for querying entries for all parameters
-@app.get('/V0/data/entry/')
+@app.get('/V0/data/entry')
 def get_entries():
     entries = {}
     types = {}
