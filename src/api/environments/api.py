@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-param_names=['type', 'age', 'breed', 'genders', 'size', 'status', 'country', 'state']
+param_names=['type', 'age', 'breed', 'gender', 'size', 'status', 'country', 'state']
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,7 +39,7 @@ def get_entries():
             for id,country in data:
                 countries[id] = country
 
-        if param == "breed" or param == "genders":
+        if param == "breed":
             for id, type_id, descriptor in data:
                 type = types[type_id]
                 if type not in rows:
@@ -51,11 +51,15 @@ def get_entries():
                 if country not in rows:
                     rows[country] = {}
                 rows[country][province] = id
+        elif param == "gender":
+            rows["Female"] = 1
+            rows["Male"] = 2
+            rows["Unknown"] = 3
         else:
             for id, entry in data:
                 rows[entry] = id
         entries[param.capitalize()]=rows 
-        
+
     return make_response(jsonify(entries), 200)
 
 

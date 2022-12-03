@@ -18,7 +18,7 @@ const ALL_OPTION = {label: 'All', id: -1};
 const EXAMPLE_JSON = {
     "Type": {"Dog": 1, "Cat": 2, "Bird": 3, "Other": 4},
     "Age": {"Baby": 1, "Young": 2, "Adult": 3, "Senior": 4},
-    "Gender": {"Female":1, "Male":2},
+    "Gender": {"Female":1, "Male":2, "Unknown": 3},
     "Size": {"Small":1, "Medium":2, "Large":3, "Extra Large":4},
     "Status": {"adoptable":1, "adopted":2, "hold":3},
     "Country": {"CA":1, "US":2, "MX":3},
@@ -82,6 +82,7 @@ function PieChartPage() {
                 //loop over parms
                 setOptions(result);
             }).catch((error) => {
+                console.log(error)
                 if(API_URL.includes("localhost")){
                     setOptions(EXAMPLE_JSON);
                 }
@@ -89,7 +90,7 @@ function PieChartPage() {
         }, []);
         
         function setOptions(result){
-            let parms = ["Type", "Age", "Genders", "Size", "Status", "Country"]
+            let parms = ["Type", "Age", "Gender", "Size", "Status", "Country"]
             let setFunc = [setTypeOpt, setAgeOpt, setGenderOpt, setSizeOpt, setStatusOpt, setCountryOpt]
             let setFuncSelected = [setTypeSelected, setAgeSelected, setGenderSelected, setSizeSelected, setStatusSelected, setCountrySelected]
             
