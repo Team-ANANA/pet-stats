@@ -7,6 +7,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form'
 
+import "./piechartPage.css";
+
 import API_URL from "../env";
 
 var ALLBREEDS = {};
@@ -71,6 +73,8 @@ const EXAMPLE_HEATMAP_DATA = {
   "MB": 75, "SK": 43, "AB": 50, "BC": 88, "NU": 21, "NT": 43,
   "YT": 21, "ON": 19, "QC": 60, "NB": 4, "NS": 44, "NF": 38,
   "PE": 67}
+
+  const EXAMPLE_HEATMAP_DATA2 = {"AL":99,"AK":13,"AZ":30,"AR":73,"CA":49,"CO":7,"CT":39,"DE":25,"DC":63,"FL":53,"GA":84,"HI":58,"ID":14,"IL":92,"IN":97,"IA":35,"KS":89,"KY":65,"LA":39,"ME":47,"MD":98,"MA":70,"MI":9,"MN":86,"MS":22,"MO":36,"MT":55,"NE":15,"NV":31,"NH":73,"NJ":85,"NM":2,"NY":83,"NC":48,"ND":15,"OH":84,"OK":17,"OR":42,"PA":66,"RI":90,"SC":16,"SD":66,"TN":18,"TX":61,"UT":68,"VT":29,"VA":58,"WA":9,"WV":65,"WI":85,"WY":69}
 //heat
 function HeatMapPage(props) {
   useEffect(() => {
@@ -162,8 +166,8 @@ function HeatMapPage(props) {
   const [sizeOpt, setSizeOpt] = useState([]);
   const [sizeSelected, setSizeSelected] = useState([]);
   
-  const [countryOpt, setCountryOpt] = useState([{label: "Canada", id:1}]);
-  const [countrySelected, setCountrySelected] = useState([{label: "Canada", id:1}]);
+  const [countryOpt, setCountryOpt] = useState([{label: "Canada", id:1}, {label: "USA",  id: 2}]);
+  const [countrySelected, setCountrySelected] = useState([{label: "USA", id:2}]);
 
   function reset(){
     setTypeSelected([ALL_OPTION]);
@@ -229,11 +233,15 @@ function getGraphData(){
           setData(set_up_heatmap_data(result));
         }).catch((error) => {
             if(API_URL.includes("localhost")){
-              setData(set_up_heatmap_data(EXAMPLE_HEATMAP_DATA));
+                if(countrySelected[0].label === "Canada"){
+                    setData(set_up_heatmap_data(EXAMPLE_HEATMAP_DATA));
+                }
+                else{
+                    setData(set_up_heatmap_data(EXAMPLE_HEATMAP_DATA2));
+                }
             }
         });
     }
-    
 
   function set_up_heatmap_data(data){
     //loop over data dic
@@ -249,7 +257,7 @@ function getGraphData(){
     <>
     <Container>
     <Row>
-    <h1 className="title">Heat Map Visualizer</h1>
+    <h4 className="title">Heat Map Visualizer</h4>
     </Row>
     <Row>
     <Col>
@@ -278,7 +286,7 @@ function getGraphData(){
     </Row>
     <Row className="rowDiv">
     <Col>
-    <strong>From</strong>
+    <strong className="page-header">From</strong>
     <Form.Control
     type="date"
     name="datepic"
@@ -288,7 +296,7 @@ function getGraphData(){
     onChange={(e) => setStartDate(e.target.value)}/>
     </Col>
     <Col>
-    <strong>To</strong>
+    <strong className="page-header">To</strong>
     <Form.Control
     type="date"
     name="datepic"
@@ -298,7 +306,7 @@ function getGraphData(){
     onChange={(e) => setEndDate(e.target.value)}/>
     </Col>
     <Col style={{position: "relative"}}>
-    <Button variant="outline-primary" onClick={setToToday} style={{position: "absolute", bottom: "0"}}>Today</Button>
+    <Button variant="outline-primary" onClick={setToToday} className="empty-button">Today</Button>
     </Col>
     </Row>
     <Row>
@@ -344,15 +352,15 @@ function getGraphData(){
                 </Row>
                 <Row>
                 <Button variant="primary" 
-                style={{width: "100px", margin: "10px"}}
+                className="fill-button"
                 onClick={getGraphData}>Generate</Button>
                 <Button 
                 variant="primary" 
-                style={{width: "100px", margin: "10px"}}
+                className="fill-button"
                 onClick={reset}>&#x21bb; Reset </Button>
                 </Row>
                 <Row>
-                {!props.test && <ChoroplethMap data={data}/>}
+                {!props.test && <ChoroplethMap data={data} country={countrySelected[0].label}/>}
                 </Row>
                 </Container>
                 </>

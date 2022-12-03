@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import * as d3 from 'd3';
-import Datamap from 'datamaps/dist/datamaps.world.min.js';
+import Datamap from 'datamaps/dist/datamaps.all.js';
 import CanadaJson from './Canada.topo.json';
+import USAJson from './USA.topo.json';
 
 // class ChoroplethMap extends Component {
 //     componentDidMount() {
 function ChoroplethMap(props){
+    const SETTINGS = {"Canada": {scope: 'canada', json: CanadaJson, center: [-106.3468, 68.1304], scale: 320, heightScale: 2},
+                      "USA": {scope: 'usa', json: USAJson, center: [-99.426770, 39.826770], scale: 700, heightScale: 3}};
     useEffect(() => {
         document.getElementById('map').innerHTML = '';
         //console.log(props.data)
@@ -30,18 +33,16 @@ function ChoroplethMap(props){
             dataset[iso] = { numberOfThings: value, fillColor: paletteScale(value) }; //{ numberOfThings: value,fillKey: 'MEDIUM' }//
         });
 
-        console.log(dataset)
-
         let map = new Datamap({
             element: document.getElementById('map'),
-            scope: 'canada',
+            scope: SETTINGS[props.country].scope,//'canada',
             geographyConfig: {
                 popupOnHover: true,
                 highlightOnHover: true,
                 borderColor: '#444',
                 highlightBorderWidth: 1,
                 borderWidth: 0.5,
-                dataJson: CanadaJson,
+                dataJson: SETTINGS[props.country].json,//CanadaJson,
                 popupTemplate: function (geo, data) {
                     // don't show tooltip if country don't present in dataset
                     if (!data) { return; }
@@ -62,9 +63,9 @@ function ChoroplethMap(props){
             data: dataset,
             setProjection: function (element) {
                 var projection = d3.geoMercator()
-                .center([-106.3468, 68.1304]) // always in [East Latitude, North Longitude]
-                .scale(250)
-                .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+                .center(SETTINGS[props.country].center) // always in [East Latitude, North Longitude]
+                .scale(SETTINGS[props.country].scale)
+                .translate([element.offsetWidth / 2, element.offsetHeight / SETTINGS[props.country].heightScale]);
                     // .center([-106.3468, 68.1304]) // always in [East Latitude, North Longitude]
                     // .scale(20)
                     // .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
@@ -76,8 +77,8 @@ function ChoroplethMap(props){
     }, [props.data]);
         return (
             <div id="map" style={{
-                height: "600px",
-                width: "600px",
+                height: "800px",
+                width: "800px",
                 position: "relative",
             }}></div>
         );
