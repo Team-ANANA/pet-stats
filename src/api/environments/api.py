@@ -2,9 +2,12 @@ from flask import Flask, jsonify, make_response, request
 from datetime import datetime
 import sql_util
 import logging
+from flask_cors import CORS
 
 app = Flask(__name__)
-param_names=['type', 'age', 'breed', 'gender', 'size', 'status', 'country', 'province']
+CORS(app)
+
+param_names=['type', 'age', 'breed', 'genders', 'size', 'status', 'country', 'state']
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,13 +39,13 @@ def get_entries():
             for id,country in data:
                 countries[id] = country
 
-        if param == "breed":
-            for id, type_id, breed in data:
+        if param == "breed" or param == "genders":
+            for id, type_id, descriptor in data:
                 type = types[type_id]
                 if type not in rows:
                     rows[type] = {}
-                rows[type][breed] = id
-        elif param == "province":
+                rows[type][descriptor] = id
+        elif param == "state":
             for id, country_id, province in data:
                 country = countries[country_id]
                 if country not in rows:
@@ -51,8 +54,8 @@ def get_entries():
         else:
             for id, entry in data:
                 rows[entry] = id
-        entries[param.capitalize()]=rows
-
+        entries[param.capitalize()]=rows 
+        
     return make_response(jsonify(entries), 200)
 
 

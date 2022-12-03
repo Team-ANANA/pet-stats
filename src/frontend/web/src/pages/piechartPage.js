@@ -89,7 +89,7 @@ function PieChartPage() {
         }, []);
         
         function setOptions(result){
-            let parms = ["Type", "Age", "Gender", "Size", "Status", "Country"]
+            let parms = ["Type", "Age", "Genders", "Size", "Status", "Country"]
             let setFunc = [setTypeOpt, setAgeOpt, setGenderOpt, setSizeOpt, setStatusOpt, setCountryOpt]
             let setFuncSelected = [setTypeSelected, setAgeSelected, setGenderSelected, setSizeSelected, setStatusSelected, setCountrySelected]
             
@@ -103,7 +103,7 @@ function PieChartPage() {
                 setFuncSelected[i]([ALL_OPTION])
             }
             
-            parms = ["Breed", "Province"]
+            parms = ["Breed", "State"]
             setFunc = [setBreedOpt, setProvinceOpt]
             setFuncSelected = [setBreedSelected, setProvinceSelected]
             let cache = [ALLBREEDS, ALLPROVINCE]
