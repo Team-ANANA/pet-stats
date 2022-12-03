@@ -1,11 +1,43 @@
 .rowDiv {
-    border-bottom: 1px solid rgb(184, 184, 184);
+    border-bottom: 1px solid rgb(140, 161, 198);
     padding-bottom: 15px;
     padding-right: 15px;
 }
 
 .AdvanceSearch{
-    border-bottom: 1px solid rgb(95, 141, 222);
+    border-bottom: 1px solid rgb(68, 116, 198);
     color:rgb(95, 141, 222);
     padding-top: 10px;
+}
+
+.title{
+    color:rgb(36, 78, 150);
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.page-header{
+    color:rgb(68, 116, 198);
+}
+
+.fill-button{
+    width: 100px;
+    margin: 10px;
+    background: rgb(51, 107, 203);
+}
+
+.fill-button:hover{
+    background: rgb(26, 62, 125);
+}
+
+.empty-button{
+    position: absolute;
+    bottom: 0;
+    border: 1px solid rgb(51, 107, 203);
+    color:rgb(51, 107, 203);
+}
+
+.empty-button:hover{
+    color: white;
+    background: rgb(51, 107, 203);
 }

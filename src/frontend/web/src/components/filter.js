@@ -1,4 +1,5 @@
 import { Multiselect } from 'multiselect-react-dropdown';
+import "./filter.css";
 
 function FilterComponent(props){
     let options = props.options;
@@ -25,7 +26,7 @@ function FilterComponent(props){
     
     return (   
         <>
-        <strong>{props.title}</strong>
+        <strong className='filter-title'>{props.title}</strong>
         <Multiselect
         options={options} // Options to display in the dropdown
         selectedValues={props.selectedValue} // Preselected value to persist in dropdown
