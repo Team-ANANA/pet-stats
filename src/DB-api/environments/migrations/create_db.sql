@@ -23,7 +23,7 @@ CREATE TABLE `animals` (
   `environment_dogs` boolean,
   `environment_cats` boolean,
   `name` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` varchar(255),
   `status` varchar(255) NOT NULL,
   `published_at` timestamp NOT NULL
 );
@@ -33,36 +33,36 @@ CREATE TABLE `tags` (
   `descriptor` varchar(255)
 );
 
-CREATE TABLE `types` (
-  `id` int PRIMARY KEY NOT NULL,
+CREATE TABLE `type` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL
 );
 
-CREATE TABLE `coats` (
-  `id` int PRIMARY KEY NOT NULL,
+CREATE TABLE `coat` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type_id` int NOT NULL,
   `descriptor` varchar(255) NOT NULL
 );
 
-CREATE TABLE `colors` (
-  `id` int PRIMARY KEY NOT NULL,
+CREATE TABLE `color` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type_id` int NOT NULL,
   `descriptor` varchar(255) NOT NULL
 );
 
 CREATE TABLE `genders` (
-  `id` int PRIMARY KEY NOT NULL,
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type_id` int NOT NULL,
   `descriptor` varchar(255) NOT NULL
 );
 
-CREATE TABLE `breeds` (
-  `id` int PRIMARY KEY NOT NULL,
+CREATE TABLE `breed` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type_id` int NOT NULL,
   `descriptor` varchar(255) NOT NULL
 );
 
-CREATE TABLE `organizations` (
+CREATE TABLE `organization` (
   `id` varchar(255) PRIMARY KEY NOT NULL,
   `name` varchar(255) NOT NULL,
   `address1` varchar(255),
@@ -72,30 +72,29 @@ CREATE TABLE `organizations` (
   `country` varchar(255)
 );
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`organization_id`) REFERENCES `organizations` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`type_id`) REFERENCES `types` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`primary_breed_id`) REFERENCES `breeds` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`primary_breed_id`) REFERENCES `breed` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`secondary_breed_id`) REFERENCES `breeds` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`secondary_breed_id`) REFERENCES `breed` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`primary_color_id`) REFERENCES `colors` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`primary_color_id`) REFERENCES `color` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`secondary_color_id`) REFERENCES `colors` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`secondary_color_id`) REFERENCES `color` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`tertiary_color_id`) REFERENCES `colors` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`tertiary_color_id`) REFERENCES `color` (`id`);
 
 ALTER TABLE `animals` ADD FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`);
 
-ALTER TABLE `animals` ADD FOREIGN KEY (`coat_id`) REFERENCES `coats` (`id`);
+ALTER TABLE `animals` ADD FOREIGN KEY (`coat_id`) REFERENCES `coat` (`id`);
 
 ALTER TABLE `tags` ADD FOREIGN KEY (`id`) REFERENCES `animals` (`id`);
 
-ALTER TABLE `coats` ADD FOREIGN KEY (`type_id`) REFERENCES `types` (`id`);
+ALTER TABLE `coat` ADD FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);
 
-ALTER TABLE `colors` ADD FOREIGN KEY (`type_id`) REFERENCES `types` (`id`);
+ALTER TABLE `color` ADD FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);
 
-ALTER TABLE `genders` ADD FOREIGN KEY (`type_id`) REFERENCES `types` (`id`);
+ALTER TABLE `genders` ADD FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);
 
-ALTER TABLE `breeds` ADD FOREIGN KEY (`type_id`) REFERENCES `types` (`id`);
+ALTER TABLE `breed` ADD FOREIGN KEY (`type_id`) REFERENCES `type` (`id`);
