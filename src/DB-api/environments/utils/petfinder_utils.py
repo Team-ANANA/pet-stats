@@ -17,9 +17,10 @@ class petfinder_utils:
         response = requests.request("POST", url, headers=headers, data=payload)
         return json.loads(response.text).get('access_token')
 
-    def get_petfinder_data(self, path, access_token, payload = {}):
+    def get_petfinder_data(self, path, access_token):
         url = f"https://api.petfinder.com{path}"
 
+        payload={}
         headers = {
         "Authorization": f"Bearer {access_token}"
         }
