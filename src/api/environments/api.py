@@ -162,40 +162,63 @@ def get_heat_map():
     if 'country' in parameters:
         country = parameters['country']
     else:
+        logging.debug("Missing country parameter in heatmap request.")
         return make_response("", 400)
     
     # parse the tables for where conditions
-    where = f"WHERE"
-    temp_table = ""
+    where = "WHERE"
+    sql_array = []
+
+
     
     # only add condition if parameter is given
     for param_name, entries in parameters.items():
-        if entries != [] and param_name not in ['dateEnd', 'dateBegin']:
-            temp_table += sql_util.create_temp_table(entries, param_name)
+        if entries != []:
             if param_name == 'breed':
-                where += f"((primary_breed_id IN (SELECT * FROM @{param_name})) OR \
-                            (secondary_breed_id IN (SELECT * FROM @{param_name}))) AND"
-            else:
-                where += f"({param_name}_id IN (SELECT * FROM @{param_name})) AND"
+                # need two temp breed tables for query since temp table can't be referenced twice
+                sql_array.extend(sql_util.create_temp_table(entries, param_name).split(";"))
+                sql_array.extend(sql_util.create_temp_table(entries, param_name + '_two').split(";"))
+                where += f"((primary_breed_id IN (SELECT id FROM temp_breed)) \
+                        OR (secondary_breed_id IN (SELECT id from temp_breed_two))) AND "
+            elif param_name not in ['dateEnd', 'dateBegin', 'gender', 'state', 'country']:
+                sql_array.extend(sql_util.create_temp_table(entries, param_name).split(";"))
+                if param_name == 'type':
+                    # need two temp type tables, one for type_id, one for gender
+                    sql_array.extend(sql_util.create_temp_table(entries, param_name + '_two').split(";"))
+                where += f"({param_name}_id IN (SELECT id FROM temp_{param_name})) AND "
+
+            GENDERS = {1: "Female", 2: "Male", 3: "Unknown"}
+            if param_name == 'gender':
+                # No need to add gender query if all genders are selected
+                if len(entries) != 3:
+                    genders = []
+                    for gender_id in entries:
+                        genders.append(GENDERS[gender_id])
+                    sql_array.extend(sql_util.create_temp_table(genders, "gender").split(";"))
+                    where += f"(gender_id IN (SELECT id FROM gender WHERE ((gender.type_id IN (SELECT id FROM temp_type_two)) AND (gender.descriptor IN (SELECT id FROM temp_gender))))) AND "
+    
+    countries = {"USA":1, "Canada": 2}
+    # add country condition
+    where += f"(country_id = {countries[country]}) AND"
 
     # add date range in query
     if 'dateBegin' in parameters and 'dateEnd' in parameters:
-        begin = datetime.strptime(parameters['dateBegin'], '%Y-%m-%d')
-        where += f"(published_at >= {begin}) AND"
-        end = datetime.strptime(parameters['dateEnd'], '%Y-%m-%d')
-        where += f"(published_at <= {end})"
+        begin = dateutil.parser.parse(parameters['dateBegin'])
+        end = dateutil.parser.parse(parameters['dateEnd'])
+        where += f"(DATE(published_at) BETWEEN '{begin}' AND '{end}') "
     else:
+        logging.debug("BAD REQUEST: missing dateBegin or dateEnd for heatmap.")
         return make_response("", 400)
 
     # construct the final sql statement.
-    sql = temp_table \
-        + f"SELECT COUNT(animals.id), province.descriptor" \
-        +  "FROM (animals INNER JOIN province ON animals.province_id = province.id)"\
-        + f"GROUP BY province_id" \
-        + where + ";"
+    sql = f"SELECT COUNT(id), province " \
+        +  "FROM (SELECT animals.*, state.descriptor as province FROM animals INNER JOIN state ON animals.state_id = state.id) as joined_table "\
+        + where + f"GROUP BY province"
+
+    sql_array.append(sql)
 
     # execute sql query
-    data = sql_util.execute_sql(sql)
+    data = sql_util.execute_multiple_sql(sql_array)
 
     # format payload in province to number of matching animals mapping
     reformatted_data = {}
