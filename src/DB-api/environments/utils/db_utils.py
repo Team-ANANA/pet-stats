@@ -1,7 +1,7 @@
 import mysql.connector
 from pathlib import Path
 import petfinder_utils
-from pypika import Table, MySQLQuery, terms
+from pypika import Table, MySQLQuery
 import dateutil.parser
 
 
@@ -29,8 +29,6 @@ class db_utils:
         for operation in migration_operations:
             cursor.execute(operation)
 
-        cnx.commit()
-
     def generate_metadata_queries(self):
         res = self.petfinder_utils.get_petfinder_data(
             "/v2/types", self.petfinder_utils.get_access_token()
@@ -40,7 +38,7 @@ class db_utils:
         metadata = {
             "coats": Table("coat"),
             "colors": Table("color"),
-            "genders": Table("gender"),
+            "genders": Table("genders"),
         }
         for type in res.get("types"):
             # add type to types table
@@ -86,160 +84,132 @@ class db_utils:
         types = Table("type")
         coats = Table("coat")
         colors = Table("color")
-        genders = Table("gender")
+        genders = Table("genders")
         breeds = Table("breed")
-
-        ages = Table("age")
-        sizes = Table("size")
-        status = Table("status")
-        countries = Table("country")
-        states = Table("state")
 
         while res.get("pagination").get("current_page") <= page_max:
             for animal in res.get("animals"):
-                if animal["contact"]["address"]["country"] in ["CA", "US"]:
-                    query = (
-                        MySQLQuery.into(animals)
-                        .insert(
-                            animal["id"],
-                            animal["organization_id"],
-                            MySQLQuery.from_(types)
-                            .select(types.id)
-                            .where(types.name == animal["type"]),
-                            animal["species"],
-                            # breeds
-                            # primary breed
-                            MySQLQuery.from_(breeds)
-                            .select(breeds.id)
-                            .where(
-                                breeds.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
+                query = (
+                    MySQLQuery.into(animals)
+                    .insert(
+                        animal["id"],
+                        animal["organization_id"],
+                        MySQLQuery.from_(types)
+                        .select(types.id)
+                        .where(types.name == animal["type"]),
+                        animal["species"],
+                        # breeds
+                        # primary breed
+                        MySQLQuery.from_(breeds)
+                        .select(breeds.id)
+                        .where(
+                            breeds.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
                             )
-                            .where(breeds.descriptor == animal["breeds"]["primary"]),
-                            # secondary breed
-                            MySQLQuery.from_(breeds)
-                            .select(breeds.id)
-                            .where(
-                                breeds.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
-                            )
-                            .where(breeds.descriptor == animal["breeds"]["secondary"]),
-                            animal["breeds"]["mixed"],
-                            animal["breeds"]["unknown"],
-                            # colors
-                            # primary color
-                            MySQLQuery.from_(colors)
-                            .select(colors.id)
-                            .where(
-                                colors.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
-                            )
-                            .where(colors.descriptor == animal["colors"]["primary"]),
-                            # secondary color
-                            MySQLQuery.from_(colors)
-                            .select(colors.id)
-                            .where(
-                                colors.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
-                            )
-                            .where(colors.descriptor == animal["colors"]["secondary"]),
-                            # tertiary color
-                            MySQLQuery.from_(colors)
-                            .select(colors.id)
-                            .where(
-                                colors.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
-                            )
-                            .where(colors.descriptor == animal["colors"]["tertiary"]),
-                            # age
-                            MySQLQuery.from_(ages)
-                            .select(ages.id)
-                            .where(ages.descriptor == (animal["age"])),
-                            # gender
-                            MySQLQuery.from_(genders)
-                            .select(genders.id)
-                            .where(
-                                genders.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
-                            )
-                            .where(genders.descriptor == animal["gender"]),
-                            # size
-                            MySQLQuery.from_(sizes)
-                            .select(sizes.id)
-                            .where(sizes.descriptor == (animal["size"])),
-                            # coat
-                            MySQLQuery.from_(coats)
-                            .select(coats.id)
-                            .where(
-                                coats.type_id
-                                == (
-                                    MySQLQuery.from_(types)
-                                    .select(types.id)
-                                    .where(types.name == animal["type"])
-                                )
-                            )
-                            .where(coats.descriptor == animal["gender"]),
-                            # attributes
-                            animal["attributes"]["spayed_neutered"],
-                            animal["attributes"]["house_trained"],
-                            animal["attributes"]["declawed"],
-                            animal["attributes"]["special_needs"],
-                            animal["attributes"]["shots_current"],
-                            # environment
-                            animal["environment"]["children"],
-                            animal["environment"]["dogs"],
-                            animal["environment"]["cats"],
-                            # description/name
-                            animal["name"],
-                            animal["description"],
-                            # status
-                            MySQLQuery.from_(status)
-                            .select(status.id)
-                            .where(status.descriptor == (animal["status"])),
-                            # date published at, in ISO8601 -> python date
-                            dateutil.parser.isoparse(animal["published_at"]),
-                            # country
-                            MySQLQuery.from_(countries)
-                            .select(countries.id)
-                            .where(
-                                countries.descriptor
-                                == (animal["contact"]["address"]["country"])
-                            ),
-                            # state
-                            MySQLQuery.from_(states)
-                            .select(states.id)
-                            .where(
-                                states.descriptor
-                                == animal["contact"]["address"]["state"]
-                            ),
                         )
-                        .on_duplicate_key_update(animals.id, terms.Values(animals.id))
+                        .where(breeds.descriptor == animal["breeds"]["primary"]),
+                        # secondary breed
+                        MySQLQuery.from_(breeds)
+                        .select(breeds.id)
+                        .where(
+                            breeds.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
+                            )
+                        )
+                        .where(breeds.descriptor == animal["breeds"]["secondary"]),
+                        animal["breeds"]["mixed"],
+                        animal["breeds"]["unknown"],
+                        # colors
+                        # primary color
+                        MySQLQuery.from_(colors)
+                        .select(colors.id)
+                        .where(
+                            colors.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
+                            )
+                        )
+                        .where(colors.descriptor == animal["colors"]["primary"]),
+                        # secondary color
+                        MySQLQuery.from_(colors)
+                        .select(colors.id)
+                        .where(
+                            colors.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
+                            )
+                        )
+                        .where(colors.descriptor == animal["colors"]["secondary"]),
+                        # tertiary color
+                        MySQLQuery.from_(colors)
+                        .select(colors.id)
+                        .where(
+                            colors.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
+                            )
+                        )
+                        .where(
+                            colors.descriptor == animal["colors"]["tertiary"]
+                        ),  # age
+                        animal["age"],
+                        # gender
+                        MySQLQuery.from_(genders)
+                        .select(genders.id)
+                        .where(
+                            genders.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
+                            )
+                        )
+                        .where(genders.descriptor == animal["gender"]),
+                        # size
+                        animal["size"],
+                        # coat
+                        MySQLQuery.from_(coats)
+                        .select(coats.id)
+                        .where(
+                            coats.type_id
+                            == (
+                                MySQLQuery.from_(types)
+                                .select(types.id)
+                                .where(types.name == animal["type"])
+                            )
+                        )
+                        .where(coats.descriptor == animal["gender"]),
+                        # attributes
+                        animal["attributes"]["spayed_neutered"],
+                        animal["attributes"]["house_trained"],
+                        animal["attributes"]["declawed"],
+                        animal["attributes"]["special_needs"],
+                        animal["attributes"]["shots_current"],
+                        # environment
+                        animal["environment"]["children"],
+                        animal["environment"]["dogs"],
+                        animal["environment"]["cats"],
+                        # description/name
+                        animal["name"],
+                        animal["description"],
+                        animal["status"],
+                        # date published at, in ISO8601 -> python date
+                        dateutil.parser.isoparse(animal["published_at"]),
                     )
-                    ret.append(query)
+                )
+                ret.append(query)
             # go to next page
             res = self.petfinder_utils.get_petfinder_data(
                 res["pagination"]["_links"]["next"]["href"],

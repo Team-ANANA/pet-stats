@@ -18,7 +18,7 @@ const ALL_OPTION = {label: 'All', id: -1};
 const EXAMPLE_JSON = {
     "Type": {"Dog": 1, "Cat": 2, "Bird": 3, "Other": 4},
     "Age": {"Baby": 1, "Young": 2, "Adult": 3, "Senior": 4},
-    "Gender": {"Female":1, "Male":2, "Unknown": 3},
+    "Gender": {"Female":1, "Male":2},
     "Size": {"Small":1, "Medium":2, "Large":3, "Extra Large":4},
     "Status": {"adoptable":1, "adopted":2, "hold":3},
     "Country": {"CA":1, "US":2, "MX":3},
@@ -82,7 +82,6 @@ function PieChartPage() {
                 //loop over parms
                 setOptions(result);
             }).catch((error) => {
-                console.log(error)
                 if(API_URL.includes("localhost")){
                     setOptions(EXAMPLE_JSON);
                 }
@@ -104,7 +103,7 @@ function PieChartPage() {
                 setFuncSelected[i]([ALL_OPTION])
             }
             
-            parms = ["Breed", "State"]
+            parms = ["Breed", "Province"]
             setFunc = [setBreedOpt, setProvinceOpt]
             setFuncSelected = [setBreedSelected, setProvinceSelected]
             let cache = [ALLBREEDS, ALLPROVINCE]
@@ -219,14 +218,12 @@ function PieChartPage() {
                 "age": selectedToArrays(ageSelected, ageOpt),
                 "size": selectedToArrays(sizeSelected, sizeOpt),
                 "gender": selectedToArrays(genderSelected, genderOpt),
-                "state": selectedToArrays(provinceSelected, provinceOpt),
+                "province": selectedToArrays(provinceSelected, provinceOpt),
                 "dateBegin": startdate,
                 "dateEnd": enddate,
                 "category": catSelected[0].label
             }
-            if (params["category"] == "Province") {
-                params["category"] = "state"
-            }
+            console.log(params)
             
             fetch(url, {
                 method: 'POST',
@@ -244,7 +241,6 @@ function PieChartPage() {
                 .then((result) => {
                     setupGraphData(result);
                 }).catch((error) => {
-                    console.log(error)
                     if(API_URL.includes("localhost")){
                         setupGraphData(EXAMPLE_PIECHART_DATA);
                     }
@@ -256,6 +252,7 @@ function PieChartPage() {
                 for (const [key, value] of Object.entries(results)) {
                     data.push({label: key, value: value});
                 }
+                console.log(data)
                 setData(data);
             }
             
