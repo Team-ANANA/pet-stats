@@ -40,7 +40,7 @@ class db_utils:
         metadata = {
             "coats": Table("coat"),
             "colors": Table("color"),
-            "genders": Table("genders"),
+            "genders": Table("gender"),
         }
         for type in res.get("types"):
             # add type to types table
@@ -86,7 +86,7 @@ class db_utils:
         types = Table("type")
         coats = Table("coat")
         colors = Table("color")
-        genders = Table("genders")
+        genders = Table("gender")
         breeds = Table("breed")
 
         ages = Table("age")
