@@ -36,11 +36,11 @@ function NavBar(props) {
         href="/heatmap"
         onSelect={()=> {setSelected("heatmap");}}
         >Heat Map</Nav.Link>
-        <Nav.Link 
+        {/* <Nav.Link 
         className={"navbar-component componet-border "+(selected==="linegraph"?'navbar-selected text': 'text')} 
         href="/linegraph"
         onSelect={()=> {setSelected("linegraph");}}
-        >Line Graph</Nav.Link>
+        >Line Graph</Nav.Link> */}
         <Nav.Link 
         className={"navbar-component componet-border "+(selected==="piechart"?'navbar-selected text': 'text')}
         href="/piechart"
