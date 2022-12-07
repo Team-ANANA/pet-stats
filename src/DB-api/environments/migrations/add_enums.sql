@@ -10,8 +10,7 @@ insert into
     country (descriptor)
 VALUES
     ('US'),
-    ('CA'),
-    ('MX');
+    ('CA');
 
 insert into
     size (descriptor)
