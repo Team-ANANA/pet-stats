@@ -312,9 +312,9 @@ function getGraphData(){
     <Row>
     {advanceSearch ?
         <strong className="AdvanceSearch" onClick={() => {
-            setAdvanceSearch(false)}}>Advance Search &#8964;</strong> :
+            setAdvanceSearch(false)}}>Advanced Search &#8964;</strong> :
             <strong className="AdvanceSearch" onClick={() => {
-                setAdvanceSearch(true)}}>Advance Search &#8963;</strong>}
+                setAdvanceSearch(true)}}>Advanced Search &#8963;</strong>}
                 
                 </Row>
                 {advanceSearch && <Row className="rowDiv">
