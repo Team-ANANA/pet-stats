@@ -23,7 +23,7 @@ CREATE TABLE `animals` (
   `environment_dogs` boolean,
   `environment_cats` boolean,
   `name` varchar(255) NOT NULL,
-  `description` varchar(255),
+  `description` mediumtext,
   `status_id` int,
   `published_at` timestamp NOT NULL,
   `country_id` int,

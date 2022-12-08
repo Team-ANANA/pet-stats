@@ -33,7 +33,6 @@ def setup_db():
     db_util.execute_queries(db_util.generate_metadata_queries())
 
     # Load actual petfinder animals
-    db_util.execute_queries(db_util.generate_animal_queries(5))
-
+    db_util.load_large_animal_dataset(150)
 
 setup_db()
