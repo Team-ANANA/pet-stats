@@ -1,0 +1,2 @@
+
+DROP TABLE IF EXISTS `pet-stats`.`age`, `pet-stats`.`animals`, `pet-stats`.`breed`, `pet-stats`.`coat`, `pet-stats`.`color`, `pet-stats`.`country`, `pet-stats`.`gender`, `pet-stats`.`organization`, `pet-stats`.`status`, `pet-stats`.`state`, `pet-stats`.`size`, `pet-stats`.`tags`, `pet-stats`.`type`;

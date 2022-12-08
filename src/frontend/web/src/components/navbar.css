@@ -1,18 +1,29 @@
 .navbar-selected{
-    background-color: #dfdfdf;
+    background-color: rgb(123, 165, 242);
     color: #000;
 
 }
 
 .componet-border{
-    border-left: 1px solid rgb(184, 184, 184);
+    border-left: 1px solid rgb(95, 141, 222);
 }
 
 .navbar-component{
-    /* margin:1px 2px; */
     padding: 1px 2px;
 }
 
 .header{
-    border-bottom: 1px solid rgb(184, 184, 184);
+    background: rgb(148, 182, 245) !important;
+    border-bottom: 1px solid rgb(95, 141, 222);
+}
+
+.Brand{
+    color: white;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.text{
+    color: white;
+    font-weight: bold;
 }
