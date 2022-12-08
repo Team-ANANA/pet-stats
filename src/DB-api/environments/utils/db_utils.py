@@ -3,7 +3,7 @@ from pathlib import Path
 import petfinder_utils
 from pypika import Table, MySQLQuery, terms
 import dateutil.parser
-
+import time
 
 class db_utils:
     def __init__(self, env):
@@ -17,6 +17,7 @@ class db_utils:
         self.petfinder_utils = petfinder_utils.petfinder_utils(env)
 
     def execute_migration(self, migration):
+        # execute sql migration from file in migrations folder
         cnx = mysql.connector.connect(**self.db_config)
         cursor = cnx.cursor()
         migration_path = Path(__file__).parent.parent / "migrations" / f"{migration}"
@@ -32,6 +33,7 @@ class db_utils:
         cnx.commit()
 
     def generate_metadata_queries(self):
+        # load metadata queries from petfinder API to insert into DB
         res = self.petfinder_utils.get_petfinder_data(
             "/v2/types", self.petfinder_utils.get_access_token()
         )
@@ -77,9 +79,11 @@ class db_utils:
                 )
         return ret
 
-    def generate_animal_queries(self, page_max):
+    def generate_animal_queries(self, page_start, page_end):
+        # generate a list of INSERT statements for a given page range
+        # for the /animals route in petfinder
         res = self.petfinder_utils.get_petfinder_data(
-            "/v2/animals", self.petfinder_utils.get_access_token()
+            f"/v2/animals?page={page_start}&limit=100", self.petfinder_utils.get_access_token()
         )
         ret = []
         animals = Table("animals")
@@ -95,7 +99,7 @@ class db_utils:
         countries = Table("country")
         states = Table("state")
 
-        while res.get("pagination").get("current_page") <= page_max:
+        while res.get("pagination").get("current_page") <= page_end:
             for animal in res.get("animals"):
                 if animal["contact"]["address"]["country"] in ["CA", "US"]:
                     query = (
@@ -242,8 +246,8 @@ class db_utils:
                     ret.append(query)
             # go to next page
             res = self.petfinder_utils.get_petfinder_data(
-                res["pagination"]["_links"]["next"]["href"],
-                self.petfinder_utils.get_access_token(),
+                res["pagination"]["_links"]["next"]["href"] + '&limit=100',
+                self.petfinder_utils.get_access_token()
             )
         return ret
 
@@ -253,3 +257,15 @@ class db_utils:
         for query in queries:
             cursor.execute(query.get_sql())
         cnx.commit()
+
+
+    def load_large_animal_dataset(self, num_pages):
+        # load num_pages animals, where each page holds 100 animals.
+
+        # this exists for 2 reasons:
+        #  1. tp periodically dump loaded data into the DB to not overflow RAM
+        #  2. to force request rate limiting in a very primitive manner (50 reqs/second)
+        for page_start in range(1, num_pages, 10):
+            self.execute_queries(self.generate_animal_queries(page_start, min(page_start+10, num_pages)))
+            # rudimentary rate limiting
+            time.sleep(0.2)

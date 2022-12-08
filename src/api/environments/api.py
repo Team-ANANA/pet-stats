@@ -142,8 +142,12 @@ def get_pie_graph():
     data = sql_util.execute_multiple_sql(sql_array)
 
     reformatted_data = {}
+    total = 0
     for count, category in data:
-        reformatted_data[category] = count
+        total += count
+    
+    for count, category in data:
+        reformatted_data[category] = round((count / total) * 100, 2)
     
     logging.debug("Pie Graph data collected: %s", str(reformatted_data))
     
