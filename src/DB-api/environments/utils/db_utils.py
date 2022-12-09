@@ -4,7 +4,7 @@ import petfinder_utils
 from pypika import Table, MySQLQuery, terms
 import dateutil.parser
 import time
-
+import logging
 class db_utils:
     def __init__(self, env):
         self.db_config = {
@@ -18,9 +18,11 @@ class db_utils:
 
     def execute_migration(self, migration):
         # execute sql migration from file in migrations folder
+        logging.info('Attempting to connect to SQL server')
         cnx = mysql.connector.connect(**self.db_config)
         cursor = cnx.cursor()
         migration_path = Path(__file__).parent.parent / "migrations" / f"{migration}"
+        logging.info(f"Running migration: {migration}, located at {migration_path}")
         fd = open(migration_path, "r")
         migration_file = fd.read()
         fd.close()
@@ -28,12 +30,14 @@ class db_utils:
 
         # execute migration operations
         for operation in migration_operations:
+            logging.debug(F"Executing migration operation: {operation}")
             cursor.execute(operation)
 
         cnx.commit()
 
     def generate_metadata_queries(self):
         # load metadata queries from petfinder API to insert into DB
+        logging.info("Attempting to generate metadata insert statements")
         res = self.petfinder_utils.get_petfinder_data(
             "/v2/types", self.petfinder_utils.get_access_token()
         )
@@ -80,6 +84,7 @@ class db_utils:
         return ret
 
     def generate_animal_queries(self, page_start, page_end):
+        logging.info(f"Loading animal data, from page {page_start} to page {page_end}")
         # generate a list of INSERT statements for a given page range
         # for the /animals route in petfinder
         res = self.petfinder_utils.get_petfinder_data(
@@ -244,28 +249,39 @@ class db_utils:
                         .on_duplicate_key_update(animals.id, terms.Values(animals.id))
                     )
                     ret.append(query)
+                    logging.debug(f"Generated insert statement for animal: \n {query.get_sql()}")
             # go to next page
             res = self.petfinder_utils.get_petfinder_data(
                 res["pagination"]["_links"]["next"]["href"] + '&limit=100',
                 self.petfinder_utils.get_access_token()
             )
+            logging.debug(f"Loading page {res.get('pagination').get('current_page')}")
         return ret
 
     def execute_queries(self, queries):
         cnx = mysql.connector.connect(**self.db_config)
+        logging.info(f"Executing {len(queries)} queries")
         cursor = cnx.cursor()
         for query in queries:
+            logging.debug(f"Executed query {query.get_sql()}")
             cursor.execute(query.get_sql())
+        logging.info(f"Committed {len(queries)} queries.")
         cnx.commit()
 
 
     def load_large_animal_dataset(self, num_pages):
         # load num_pages animals, where each page holds 100 animals.
-
+        logging.info(f"Loading {num_pages} pages of animals.")
         # this exists for 2 reasons:
         #  1. tp periodically dump loaded data into the DB to not overflow RAM
         #  2. to force request rate limiting in a very primitive manner (50 reqs/second)
         for page_start in range(1, num_pages, 10):
-            self.execute_queries(self.generate_animal_queries(page_start, min(page_start+10, num_pages)))
+            page_end = min(page_start+10, num_pages)
+            logging.info(f"Loading pages: {page_start} to {page_end}")
+            self.execute_queries(self.generate_animal_queries(page_start, page_end))
             # rudimentary rate limiting
+            logging.info('Sleeping to avoid rate limit')
             time.sleep(0.2)
+
+        logging.info(f"Loaded {num_pages} pages of animals.")
+
