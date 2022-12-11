@@ -11,7 +11,8 @@ class db_utils:
             "user": "root",
             "password": env.get("db_password"),
             "port": "3306",
-            "host": "localhost",
+            "host": "172.17.0.2",
+            # "host": "localhost",
             "database": "pet-stats",
         }
         self.petfinder_utils = petfinder_utils.petfinder_utils(env)
