@@ -28,8 +28,10 @@ jobs:
       run: |
         docker build -t team0anana/csc302:frontend ./src/frontend
         docker build -t team0anana/csc302:backend ./src/api
+        docker build -t team0anana/csc302:db_import ./src/DB-api
         docker push team0anana/csc302:frontend
         docker push team0anana/csc302:backend
+        docker push team0anana/csc302:db_import
         
         
 

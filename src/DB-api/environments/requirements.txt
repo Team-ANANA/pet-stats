@@ -1,3 +1,6 @@
 Flask
 pytest
 mysql-connector-python
+pypika
+python-dateutil
+requests

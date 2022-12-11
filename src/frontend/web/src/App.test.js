@@ -13,8 +13,8 @@ test('renders navbar to 3 visualizations', () => {
   render(<App test={true}/>);
   const heatmap = screen.getByText("Heat Map");
   expect(heatmap).toBeInTheDocument();
-  const linegraph = screen.getByText("Line Graph");
-  expect(linegraph).toBeInTheDocument();
+  // const linegraph = screen.getByText("Line Graph");
+  // expect(linegraph).toBeInTheDocument();
   const piechart = screen.getByText("Pie Chart");
   expect(piechart).toBeInTheDocument();
 });
@@ -36,7 +36,7 @@ describe('Heatmap page is routed and displays', () => {
   test('should render filters', () => {
     const Filter = screen.getByText(/Breed/i);
     expect(Filter).toBeInTheDocument();
-    const advanceSearch = screen.getByText(/Advance Search/i);
+    const advanceSearch = screen.getByText(/Advanced Search/i);
     expect(advanceSearch).toBeInTheDocument();
 });
 });
@@ -59,7 +59,7 @@ describe('Piechart page is routed and displays', () => {
   test('should render filters', () => {
     const Filter = screen.getByText(/Gender/i);
     expect(Filter).toBeInTheDocument();
-    const advanceSearch = screen.getByText(/Advance Search/i);
+    const advanceSearch = screen.getByText(/Advanced Search/i);
     expect(advanceSearch).toBeInTheDocument();
 });
 });
