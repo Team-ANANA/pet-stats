@@ -42,7 +42,7 @@ def setup_db():
 
     # Load actual petfinder animals
     logging.info("Loading animals")
-    db_util.load_large_animal_dataset(1)
+    db_util.load_large_animal_dataset(5)
 
     logging.info("Loading successful, exiting.")
 
