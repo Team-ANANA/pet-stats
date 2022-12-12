@@ -1,26 +1,11 @@
-# BACKEND API
+# DB Loader
 
 ## Introduction
-This module contains the flask api server which is the backend of the pet-stats web app.
+This module contains the functionality to load from the PetFinder API into the database.
 
-## How to run the server
-To run the code locally, you need to first create a python virtual environment with the following command:
+## How to run the module
 
-`python3 -m venv venv`
+To run the code locally, first ensure that the MySQL docker image is running - see https://github.com/Team-ANANA/pet-stats/blob/master/.github/workflows/docker-image.yml for how to run this image.
 
-then we can enter the local virtual environment with:
-
-`source venv/bin/activate`
-
-within the virtual environment, install the required packages by running:
-
-`pip install -r requirements.txt`
-
-finally, start the flask api server by running:
-
-`sudo start.sh`
-
-## Testing
-To run unit tests, go into the virtual environment as mentioned above, then run:
-
-`sudo run_test.sh`
+Then, to run this import:
+`sudo startup.sh`
