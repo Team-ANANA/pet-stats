@@ -1,5 +1,5 @@
 ## Introduction
-pet-stats is a web application to display analysis of animal welfare and adoptaion statistics.
+pet-stats is a web application to display analysis of animal welfare and adoption statistics.
 
 This is the main repository of the pet-stats project. All of the source code will be stored here.
 
